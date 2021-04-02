@@ -122,7 +122,7 @@ export default class DiceRoller {
 		};
 		const html = await renderTemplate("systems/forbidden-lands/templates/chat/roll.hbs", rollData);
 		let chatData = {
-			type: CHAT_MESSAGE_TYPES.ROLL,
+			type: CONST.CHAT_MESSAGE_TYPES.ROLL,
 			user: game.user._id,
 			rollMode: game.settings.get("core", "rollMode"),
 			content: html,

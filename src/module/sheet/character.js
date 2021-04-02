@@ -2,37 +2,40 @@ import { ForbiddenLandsActorSheet } from "./actor.js";
 import { RollDialog } from "../dialog/roll-dialog.js";
 export class ForbiddenLandsCharacterSheet extends ForbiddenLandsActorSheet {
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
-			...super.defaultOptions,
-			classes: ["forbidden-lands", "sheet", "actor"],
-			template: "systems/forbidden-lands/templates/character.hbs",
-			width: 620,
-			height: 770,
-			resizable: false,
-			scrollY: [
-				".armors .item-list .items",
-				".critical-injuries .item-list .items",
-				".gears.item-list .items",
-				".spells .item-list .items",
-				".talents .item-list .items",
-				".weapons .item-list .items",
-			],
-			tabs: [
-				{
-					navSelector: ".sheet-tabs",
-					contentSelector: ".sheet-body",
-					initial: "main",
-				},
-			],
-		});
+		const options = super.defaultOptions;
+		options.classes = ["forbidden-lands", "sheet", "actor"];
+		options.resizable = false;
+		options.width = 620;
+		options.height = 770;
+		options.scrollY = [
+			".armors .item-list .items",
+			".critical-injuries .item-list .items",
+			".gears.item-list .items",
+			".spells .item-list .items",
+			".talents .item-list .items",
+			".weapons .item-list .items",
+		];
+		options.tabs = [
+			{
+				navSelector: ".sheet-tabs",
+				contentSelector: ".sheet-body",
+				initial: "main",
+			},
+		];
+		return options;
+	}
+
+	get template() {
+		return `systems/forbidden-lands/templates/character.hbs`;
 	}
 
 	getData() {
-		const data = super.getData();
-		this.computeSkills(data);
-		this.computeItems(data);
-		this.computeEncumbrance(data);
-		return data;
+		const superData = super.getData();
+		const actorData = superData.data;
+		this.computeSkills(actorData);
+		this.computeItems(actorData);
+		this.computeEncumbrance(actorData);
+		return actorData;
 	}
 
 	activateListeners(html) {
@@ -192,7 +195,7 @@ export class ForbiddenLandsCharacterSheet extends ForbiddenLandsActorSheet {
 		let header = event.currentTarget;
 		let data = duplicate(header.dataset);
 		data.name = `New ${data.type.capitalize()}`;
-		this.actor.createEmbeddedEntity("OwnedItem", data, {
+		this.actor.createEmbeddedEntity("Item", data, {
 			renderSheet: true,
 		});
 	}
