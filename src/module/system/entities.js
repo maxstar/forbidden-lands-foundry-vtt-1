@@ -1,5 +1,5 @@
 export class ForbiddenLandsActor extends Actor {
-	createEmbeddedEntity(embeddedName, data, options) /*this will eventually be ironed out */ {
+	createEmbeddedEntity(embeddedName, data, options) {
 		// Replace randomized attributes like "[[d6]] days" with a roll
 		let newData = duplicate(data);
 		const inlineRoll = /\[\[(\/[a-zA-Z]+\s)?([^\]]+)\]\]/gi;
@@ -19,25 +19,15 @@ export class ForbiddenLandsActor extends Actor {
 
 export class ForbiddenLandsItem extends Item {
 	async sendToChat() {
-		const itemData /*this will eventually be ironed out */ = duplicate(this.data);
+		const itemData = duplicate(this.data);
 		if (itemData.img.includes("/mystery-man")) {
 			itemData.img = null;
 		}
-		itemData.isArmor = itemData.type === "armor";
-		itemData.isBuilding = itemData.type === "building";
-		itemData.isCriticalInjury = itemData.type === "criticalInjury";
-		itemData.isGear = itemData.type === "gear";
-		itemData.isHireling = itemData.type === "hireling";
-		itemData.isMonsterAttack = itemData.type === "monsterAttack";
-		itemData.isMonsterTalent = itemData.type === "monsterTalent";
-		itemData.isRawMaterial = itemData.type === "rawMaterial";
-		itemData.isSpell = itemData.type === "spell";
-		itemData.isTalent = itemData.type === "talent";
-		itemData.isWeapon = itemData.type === "weapon";
+		if (game.fbl.config.itemTypes.includes(itemData.type)) itemData[`is${itemData.type.capitalize()}`] = true;
 		itemData.hasRollModifiers =
 			itemData.data.rollModifiers && Object.values(itemData.data.rollModifiers).length > 0;
 		const html = await renderTemplate("systems/forbidden-lands/templates/chat/item.hbs", itemData);
-		const chatData /* this will eventually be ironed out */ = {
+		const chatData = {
 			user: game.user._id,
 			rollMode: game.settings.get("core", "rollMode"),
 			content: html,
